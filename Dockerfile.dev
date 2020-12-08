@@ -1,0 +1,17 @@
+FROM node:12.14.0-alpine3.11
+
+RUN apk add --no-cache bash
+
+RUN touch /root/.bashrc | echo "PS1='\w\$ '" >> /root/.bashrc
+
+USER node
+
+RUN touch /home/node/.bashrc | echo "PS1='\w\$ '" >> /home/node/.bashrc
+
+RUN yarn global add nodemon
+
+RUN yarn global add @loopback/cli
+
+RUN mkdir -p /home/node/app
+
+WORKDIR /home/node/app
