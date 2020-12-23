@@ -41,7 +41,7 @@
     "url": ""
   },
   "author": "Leonardo Gomes <lgdevlop@gmail.com>",
-  "license": "",
+  "license": "MPL-2.0",
   "files": [
     "README.md",
     "dist",
