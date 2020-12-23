@@ -1,5 +1,8 @@
-import {Request, RestBindings, get, ResponseObject} from '@loopback/rest';
 import {inject} from '@loopback/core';
+import {ClassDecoratorFactory, MetadataInspector} from '@loopback/metadata';
+import {repository} from '@loopback/repository';
+import {get, Request, ResponseObject, RestBindings} from '@loopback/rest';
+import {CategoryRepository} from '../repositories';
 
 /**
  * OpenAPI response for ping()
@@ -28,11 +31,27 @@ const PING_RESPONSE: ResponseObject = {
   },
 };
 
+interface MyClassMetaData {
+  name: string;
+}
+
+function myClassDecorator(spec: MyClassMetaData): ClassDecorator{
+  const factory = new ClassDecoratorFactory<MyClassMetaData>(
+    'medata-data-my-class-decorator',
+    spec
+  );
+  return factory.create();
+}
+
 /**
  * A simple controller to bounce back http requests
  */
+@myClassDecorator({name: 'code education'})
 export class PingController {
-  constructor(@inject(RestBindings.Http.REQUEST) private req: Request) {}
+  constructor(
+    @inject(RestBindings.Http.REQUEST) private req: Request,
+    @repository(CategoryRepository) private categoryRepo: CategoryRepository
+  ) {}
 
   // Map to `GET /ping`
   @get('/ping', {
@@ -49,4 +68,18 @@ export class PingController {
       headers: Object.assign({}, this.req.headers),
     };
   }
+  @get('/categories')
+  async index() {
+    await this.categoryRepo.create({
+      id: '1',
+      name: 'minha primeira categoria',
+      description: 'minha descrição'
+    })
+    return this.categoryRepo.find()
+  }
 }
+
+const meta = MetadataInspector.getClassMetadata<MyClassMetaData>(
+  'medata-data-my-class-decorator',
+  PingController
+);
