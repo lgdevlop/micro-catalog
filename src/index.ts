@@ -1,3 +1,4 @@
+import './bootstrap';
 import {ApplicationConfig, MicroCatalogApplication} from './application';
 
 export * from './application';
